@@ -13,6 +13,13 @@ export interface Train {
   coordinates: [number, number];
   nextSignal: string;
   platform?: string;
+  // AI-powered enhancements
+  aiRecommendation: string;
+  optimizationScore: number; // 0-100
+  route: string;
+  estimatedArrival: string;
+  passengers?: number;
+  cargo?: string;
 }
 
 export interface Section {
@@ -48,70 +55,95 @@ export interface Recommendation {
 export const sampleTrains: Train[] = [
   {
     id: "T001",
-    name: "Rajdhani Express",
+    name: "Rajdhani Express 12301",
     type: "Express",
-    currentLocation: "New Delhi",
+    currentLocation: "Delhi-Gurgaon Sec A2",
     destination: "Mumbai Central",
     status: "On Time",
     delay: 0,
     speed: 120,
     priority: "High",
     coordinates: [77.1025, 28.6139],
-    nextSignal: "ND-001",
-    platform: "Platform 1"
+    nextSignal: "SIG_A2_03",
+    platform: "Platform 1",
+    aiRecommendation: "Maintain current speed and priority clearance",
+    optimizationScore: 95,
+    route: "New Delhi - Mumbai Central via Mathura",
+    estimatedArrival: "14:45",
+    passengers: 850,
   },
   {
     id: "T002",
-    name: "Shatabdi Express",
+    name: "Shatabdi Express 12002",
     type: "Express",
-    currentLocation: "Gurgaon",
+    currentLocation: "Gurgaon-Rewari Sec B1",
     destination: "Chandigarh",
     status: "Delayed",
     delay: 15,
-    speed: 95,
+    speed: 0,
     priority: "High",
     coordinates: [77.0266, 28.4595],
-    nextSignal: "GGN-002"
+    nextSignal: "SIG_B1_02",
+    aiRecommendation: "Priority signal clearance recommended - 8min recovery possible",
+    optimizationScore: 78,
+    route: "New Delhi - Chandigarh via Rewari",
+    estimatedArrival: "11:47",
+    passengers: 650,
   },
   {
     id: "T003",
-    name: "Local Passenger",
+    name: "Delhi-Faridabad Local",
     type: "Local",
-    currentLocation: "Faridabad",
+    currentLocation: "Delhi-Faridabad Sec C1",
     destination: "Delhi Junction",
     status: "On Time",
     delay: 0,
     speed: 60,
     priority: "Medium",
     coordinates: [77.3178, 28.4089],
-    nextSignal: "FDB-001",
-    platform: "Platform 3"
+    nextSignal: "SIG_C1_01",
+    platform: "Platform 3",
+    aiRecommendation: "Schedule optimized - allow express overtaking at next junction",
+    optimizationScore: 88,
+    route: "Faridabad - Delhi Junction",
+    estimatedArrival: "10:25",
+    passengers: 420,
   },
   {
     id: "T004",
-    name: "Freight Special",
+    name: "Freight Express 15234",
     type: "Freight",
-    currentLocation: "Palwal",
-    destination: "Tughlakabad",
+    currentLocation: "Palwal-Mathura Sec E1",
+    destination: "Tughlakabad Yard",
     status: "Ahead",
     delay: -10,
     speed: 45,
     priority: "Low",
     coordinates: [77.3255, 28.1441],
-    nextSignal: "PLW-003"
+    nextSignal: "SIG_E1_03",
+    aiRecommendation: "Efficient routing - maintain current schedule",
+    optimizationScore: 92,
+    route: "Palwal - Tughlakabad via Mathura",
+    estimatedArrival: "16:35",
+    cargo: "1200 tonnes steel",
   },
   {
     id: "T005",
-    name: "Duronto Express",
+    name: "Duronto Express 12259",
     type: "Express",
-    currentLocation: "Mathura",
+    currentLocation: "Mathura Junction D2",
     destination: "Chennai Central",
     status: "Delayed",
     delay: 25,
-    speed: 110,
+    speed: 0,
     priority: "High",
     coordinates: [77.6739, 27.4924],
-    nextSignal: "MTJ-001"
+    nextSignal: "SIG_D2_01",
+    aiRecommendation: "CRITICAL: Reroute via bypass to recover 15min - Digital Twin confirms feasibility",
+    optimizationScore: 65,
+    route: "Delhi - Chennai via Mathura-Agra",
+    estimatedArrival: "13:40",
+    passengers: 980,
   }
 ];
 
@@ -165,6 +197,14 @@ export const sampleSections: Section[] = [
 
 export const sampleKPIs: KPI[] = [
   {
+    name: "AI Decision Accuracy",
+    value: 94.2,
+    unit: "%",
+    trend: "up",
+    target: 95,
+    status: "good"
+  },
+  {
     name: "Overall Punctuality",
     value: 87.5,
     unit: "%",
@@ -179,6 +219,14 @@ export const sampleKPIs: KPI[] = [
     trend: "up",
     target: 150,
     status: "good"
+  },
+  {
+    name: "Optimization Score",
+    value: 88.4,
+    unit: "%",
+    trend: "up",
+    target: 90,
+    status: "warning"
   },
   {
     name: "Average Delay",
@@ -197,11 +245,11 @@ export const sampleKPIs: KPI[] = [
     status: "good"
   },
   {
-    name: "Operational Efficiency",
-    value: 92.1,
+    name: "Digital Twin Sync",
+    value: 99.1,
     unit: "%",
-    trend: "up",
-    target: 95,
+    trend: "stable",
+    target: 99,
     status: "good"
   },
   {
@@ -219,41 +267,61 @@ export const sampleRecommendations: Recommendation[] = [
     id: "R001",
     priority: "High",
     type: "Routing",
-    title: "Reroute T005 via alternate path",
-    description: "Duronto Express experiencing 25-minute delay. Recommend rerouting through Agra-Mathura bypass to reduce congestion in main section.",
-    estimatedImpact: "Reduce delay by 15 minutes, improve section utilization by 8%",
+    title: "AI Optimal Rerouting for Duronto Express T005",
+    description: "Digital Twin simulation shows 15-minute recovery possible via Agra-Mathura bypass. AI optimization engine recommends immediate rerouting to minimize network impact.",
+    estimatedImpact: "Reduce delay by 15 minutes, improve section utilization by 12%, prevent cascading delays",
+    status: "New",
+    timestamp: new Date(Date.now() - 3 * 60 * 1000)
+  },
+  {
+    id: "R002",
+    priority: "High",
+    type: "Timing",
+    title: "Dynamic Signal Optimization - SEC001 Delhi-Gurgaon",
+    description: "AI detected congestion pattern. Recommend reducing signal intervals by 25 seconds using adaptive signal control. Express train priority rules applied.",
+    estimatedImpact: "Increase throughput by 18%, reduce express delays by 4 minutes",
+    status: "In Progress",
+    timestamp: new Date(Date.now() - 8 * 60 * 1000)
+  },
+  {
+    id: "R003",
+    priority: "Medium",
+    type: "Platform",
+    title: "Smart Platform Allocation at Delhi Junction",
+    description: "AI platform allocation algorithm suggests reassigning Platform 2 for incoming Shatabdi Express to minimize turnaround time and conflict resolution.",
+    estimatedImpact: "Reduce platform occupancy time by 3 minutes, improve passenger flow",
+    status: "New",
+    timestamp: new Date(Date.now() - 12 * 60 * 1000)
+  },
+  {
+    id: "R004",
+    priority: "High", 
+    type: "Routing",
+    title: "Express Priority Enforcement - T002 Shatabdi",
+    description: "Indian Railways priority rules: Express trains override freight. AI recommends immediate priority clearance at SIG_B1_02 with freight holding pattern.",
+    estimatedImpact: "Restore express schedule adherence, maintain network hierarchy",
     status: "New",
     timestamp: new Date(Date.now() - 5 * 60 * 1000)
   },
   {
-    id: "R002",
-    priority: "Medium",
-    type: "Platform",
-    title: "Optimize platform allocation at Delhi Junction",
-    description: "Current platform allocation causing bottleneck. Suggest reassigning Platform 2 to incoming Local Passenger train.",
-    estimatedImpact: "Reduce turnaround time by 3 minutes",
-    status: "In Progress",
-    timestamp: new Date(Date.now() - 15 * 60 * 1000)
-  },
-  {
-    id: "R003",
-    priority: "High",
-    type: "Timing",
-    title: "Adjust signal timing for SEC001",
-    description: "Delhi-Gurgaon section showing 75% utilization. Recommend reducing signal intervals by 30 seconds to improve throughput.",
-    estimatedImpact: "Increase capacity by 12%, reduce waiting times",
-    status: "New",
-    timestamp: new Date(Date.now() - 2 * 60 * 1000)
-  },
-  {
-    id: "R004",
+    id: "R005",
     priority: "Low",
     type: "Maintenance",
-    title: "Schedule preventive maintenance for SEC005",
-    description: "Palwal-Mathura section at 100% utilization. Schedule maintenance during off-peak hours to prevent service disruption.",
-    estimatedImpact: "Prevent potential 2-hour service disruption",
+    title: "Predictive Maintenance Alert - SEC005",
+    description: "Digital Twin analysis indicates optimal maintenance window. AI schedules preventive maintenance during identified low-traffic period (02:00-04:00).",
+    estimatedImpact: "Prevent potential 3-hour service disruption, optimize resource utilization",
     status: "Completed",
     timestamp: new Date(Date.now() - 45 * 60 * 1000)
+  },
+  {
+    id: "R006",
+    priority: "Medium",
+    type: "Timing",
+    title: "Load Balancing Optimization",
+    description: "AI load balancing algorithm recommends distributing freight traffic across alternate routes during peak hours to maximize passenger train efficiency.",
+    estimatedImpact: "Improve passenger service punctuality by 6%, optimize freight movement",
+    status: "In Progress", 
+    timestamp: new Date(Date.now() - 20 * 60 * 1000)
   }
 ];
 
