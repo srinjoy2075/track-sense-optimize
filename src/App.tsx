@@ -17,10 +17,7 @@ import { useEffect } from "react";
 const queryClient = new QueryClient();
 
 const App = () => {
-  // Set dark theme by default for control center operations
-  useEffect(() => {
-    document.documentElement.classList.add('dark');
-  }, []);
+  // Light theme by default
 
   return (
     <QueryClientProvider client={queryClient}>
